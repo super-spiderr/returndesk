@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+:root {
+  /* returndesk design tokens — see design system doc */
+  --ink: #161c24; /* chrome, headings, body, buttons, rules */
+  --paper: #ffffff; /* workspace */
+  --wash: #eff0f2; /* page background */
+  --rule: #dcdfe4; /* borders */
+  --muted: #5a626d; /* secondary text */
+  --lime: #85e04c; /* brand + gain — dark backgrounds only */
+  --lime-deep: #3f8f1c; /* gain — white backgrounds only */
+  --red: #ff5c4d; /* cost — dark backgrounds only */
+  --red-deep: #ce2a1b; /* cost — white backgrounds only */
+
+  /* Site chrome is light-only. These back the black slab component alone —
+     the one panel that's always near-black regardless of page background. */
+  --dark-bg: #14181f;
+  --dark-surface: #1c222b;
+  --dark-border: #2a313b;
+  --dark-muted: #8b939e;
+  --dark-soft: #d7dbe0;
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --color-wash: var(--wash);
+  --color-rule: var(--rule);
+  --color-muted: var(--muted);
+  --color-lime: var(--lime);
+  --color-lime-deep: var(--lime-deep);
+  --color-red: var(--red);
+  --color-red-deep: var(--red-deep);
+
+  --color-dark-bg: var(--dark-bg);
+  --color-dark-surface: var(--dark-surface);
+  --color-dark-border: var(--dark-border);
+  --color-dark-muted: var(--dark-muted);
+  --color-dark-soft: var(--dark-soft);
+
+  --font-sans: var(--font-archivo), var(--font-mukta-malar), var(--font-taun-tamil), var(--font-tamil-body), 'Mukta Malar', 'Noto Sans Tamil', 'Tamil Sangam MN', 'InaiMathi', Arial, Helvetica, sans-serif;
+  --font-tamil: var(--font-mukta-malar), var(--font-taun-tamil), var(--font-tamil-body), 'Mukta Malar', 'Noto Sans Tamil', 'Tamil Sangam MN', 'InaiMathi', Arial, sans-serif;
+}
+
+body {
+  background: var(--wash);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Texture on the black slab and the homepage's watermark backdrop. */
+@keyframes drift {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-drift {
+  animation: drift 120s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-drift {
+    animation: none;
+  }
+}
+
+/* Tamil Typography: letter-spacing and breathing room for Tamil glyphs */
+html[lang="ta"],
+[data-lang="ta"] {
+  letter-spacing: 0.025em;
+}
+
+html[lang="ta"] h1,
+html[lang="ta"] h2,
+html[lang="ta"] h3,
+html[lang="ta"] h4,
+[data-lang="ta"] h1,
+[data-lang="ta"] h2,
+[data-lang="ta"] h3,
+[data-lang="ta"] h4 {
+  letter-spacing: 0.03em;
+  line-height: 1.32;
+}
+
+html[lang="ta"] p,
+html[lang="ta"] li,
+html[lang="ta"] span,
+html[lang="ta"] label,
+html[lang="ta"] button,
+html[lang="ta"] input,
+html[lang="ta"] th,
+html[lang="ta"] td,
+[data-lang="ta"] p,
+[data-lang="ta"] li,
+[data-lang="ta"] span,
+[data-lang="ta"] label,
+[data-lang="ta"] button,
+[data-lang="ta"] input,
+[data-lang="ta"] th,
+[data-lang="ta"] td {
+  letter-spacing: 0.02em;
+}
+
