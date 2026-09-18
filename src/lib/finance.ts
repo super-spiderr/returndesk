@@ -1,6 +1,9 @@
 // Shared finance math, written once and reused by every calculator.
 // Single source of truth for EMI / Tax / IRR / XIRR / Compounding.
 
+import { getTaxYearRules, LATEST_TAX_YEAR } from "./tax";
+import type { TaxSlab, OldRegimeRules } from "./tax";
+
 /**
  * Monthly EMI for a fully-amortising loan.
  * @param principal Loan amount.
@@ -295,11 +298,13 @@ export interface TaxParams {
   hraReceivedAnnual: number;
   rentPaidAnnual: number;
   isMetroCity: boolean; // 50% vs 40% for HRA
-  section80C: number; // Max ₹1.5L
-  section80D: number; // Health Insurance (₹25k - ₹1L)
-  section24b: number; // Home Loan Interest (Max ₹2L)
-  nps80CCD1B: number; // NPS additional (Max ₹50k)
+  section80C: number;
+  section80D: number;
+  section24b: number; // Home Loan Interest
+  nps80CCD1B: number;
   otherDeductions: number;
+  /** e.g. "2025-26". Defaults to the latest supported year — see `@/lib/tax`. */
+  financialYear?: string;
   lang?: "en" | "ta";
 }
 
@@ -318,6 +323,8 @@ export interface TaxRegimeResult {
 }
 
 export interface IncomeTaxComparisonResult {
+  financialYear: string;
+  lastUpdated: string;
   oldRegime: TaxRegimeResult;
   newRegime: TaxRegimeResult;
   optimalRegime: "Old" | "New" | "Equal";
@@ -326,6 +333,77 @@ export interface IncomeTaxComparisonResult {
   breakevenDeductionNeeded: number;
   verdictHeadline: string;
   verdictSummary: string;
+}
+
+/**
+ * Progressive slab tax for one regime's bracket structure, plus a display
+ * breakdown covering every bracket (₹0 rows included for brackets the income
+ * doesn't reach, so the full slab structure is always visible).
+ */
+function computeSlabTax(
+  taxableIncome: number,
+  slabs: TaxSlab[]
+): { tax: number; breakdown: { slab: string; rate: string; tax: number }[] } {
+  let tax = 0;
+  let lowerBound = 0;
+  const breakdown: { slab: string; rate: string; tax: number }[] = [];
+
+  for (const bracket of slabs) {
+    const upperBound = bracket.upTo ?? Infinity;
+    const amountInBracket = Math.max(0, Math.min(taxableIncome, upperBound) - lowerBound);
+    const taxForBracket = (amountInBracket * bracket.ratePercent) / 100;
+    tax += taxForBracket;
+
+    breakdown.push({
+      slab:
+        bracket.upTo === null
+          ? `Above ₹${lowerBound.toLocaleString("en-IN")}`
+          : lowerBound === 0
+          ? `Up to ₹${bracket.upTo.toLocaleString("en-IN")}`
+          : `₹${(lowerBound + 1).toLocaleString("en-IN")} – ₹${bracket.upTo.toLocaleString("en-IN")}`,
+      rate: bracket.ratePercent === 0 ? "Nil" : `${bracket.ratePercent}%`,
+      tax: taxForBracket,
+    });
+
+    lowerBound = upperBound;
+  }
+
+  return { tax, breakdown };
+}
+
+/** Old Regime total tax (incl. 87A rebate and cess) for a given deduction total — used to search for the breakeven point. */
+function oldRegimeTaxForDeductions(
+  grossAnnualSalary: number,
+  totalDeductions: number,
+  oldRegime: OldRegimeRules
+): number {
+  const taxableIncome = Math.max(0, grossAnnualSalary - totalDeductions);
+  let tax = computeSlabTax(taxableIncome, oldRegime.slabs).tax;
+  if (taxableIncome <= oldRegime.rebateTaxableIncomeLimit) tax = 0;
+  return tax + (tax * oldRegime.cessPercent) / 100;
+}
+
+/**
+ * Minimum total Old Regime deductions needed to bring its tax at or below
+ * `targetTax` (the New Regime's tax), found by binary search since Old
+ * Regime tax is non-increasing as deductions rise.
+ */
+function computeBreakevenDeductions(
+  grossAnnualSalary: number,
+  targetTax: number,
+  oldRegime: OldRegimeRules
+): number {
+  let lo = 0;
+  let hi = grossAnnualSalary;
+  for (let i = 0; i < 40; i++) {
+    const mid = (lo + hi) / 2;
+    if (oldRegimeTaxForDeductions(grossAnnualSalary, mid, oldRegime) <= targetTax) {
+      hi = mid;
+    } else {
+      lo = mid;
+    }
+  }
+  return Math.round(hi);
 }
 
 export function calculateIncomeTax(params: TaxParams): IncomeTaxComparisonResult {
@@ -340,27 +418,30 @@ export function calculateIncomeTax(params: TaxParams): IncomeTaxComparisonResult
     section24b,
     nps80CCD1B,
     otherDeductions,
+    financialYear = LATEST_TAX_YEAR,
     lang = "en",
   } = params;
   const isTa = lang === "ta";
+  const rules = getTaxYearRules(financialYear);
 
-  // 1. Calculate HRA Exemption for Old Regime
+  // 1. HRA Exemption (Old Regime)
   let hraExemption = 0;
   if (hraReceivedAnnual > 0 && rentPaidAnnual > 0) {
-    const basicLimit = basicSalaryAnnual * (isMetroCity ? 0.5 : 0.4);
+    const basicLimit =
+      (basicSalaryAnnual *
+        (isMetroCity ? rules.oldRegime.hra.metroPercent : rules.oldRegime.hra.nonMetroPercent)) /
+      100;
     const rentMinusTenPercentBasic = Math.max(0, rentPaidAnnual - basicSalaryAnnual * 0.1);
     hraExemption = Math.min(hraReceivedAnnual, basicLimit, rentMinusTenPercentBasic);
   }
 
-  // Old Regime Deductions
-  const oldStandardDeduction = 50000;
-  const capped80C = Math.min(150000, Math.max(0, section80C));
-  const capped80D = Math.min(100000, Math.max(0, section80D));
-  const capped24b = Math.min(200000, Math.max(0, section24b));
-  const cappedNPS = Math.min(50000, Math.max(0, nps80CCD1B));
+  const capped80C = Math.min(rules.oldRegime.section80CMax, Math.max(0, section80C));
+  const capped80D = Math.min(rules.oldRegime.section80DMax, Math.max(0, section80D));
+  const capped24b = Math.min(rules.oldRegime.section24bMax, Math.max(0, section24b));
+  const cappedNPS = Math.min(rules.oldRegime.nps80CCD1BMax, Math.max(0, nps80CCD1B));
 
   const totalOldDeductions =
-    oldStandardDeduction +
+    rules.oldRegime.standardDeduction +
     hraExemption +
     capped80C +
     capped80D +
@@ -369,91 +450,43 @@ export function calculateIncomeTax(params: TaxParams): IncomeTaxComparisonResult
     Math.max(0, otherDeductions);
 
   const oldTaxableIncome = Math.max(0, grossAnnualSalary - totalOldDeductions);
+  const { tax: oldSlabTax, breakdown: oldBreakdown } = computeSlabTax(
+    oldTaxableIncome,
+    rules.oldRegime.slabs
+  );
 
-  // Calculate Old Regime Tax Slabs (General Individual < 60y)
-  let oldTax = 0;
-  const oldBreakdown: { slab: string; rate: string; tax: number }[] = [];
-
-  if (oldTaxableIncome > 1000000) {
-    const taxChunk = (oldTaxableIncome - 1000000) * 0.3;
-    oldTax += taxChunk;
-    oldBreakdown.push({ slab: "Above ₹10,00,000", rate: "30%", tax: taxChunk });
-  }
-  if (oldTaxableIncome > 500000) {
-    const chunk = Math.min(oldTaxableIncome - 500000, 500000);
-    const taxChunk = chunk * 0.2;
-    oldTax += taxChunk;
-    oldBreakdown.push({ slab: "₹5,00,001 – ₹10,00,000", rate: "20%", tax: taxChunk });
-  }
-  if (oldTaxableIncome > 250000) {
-    const chunk = Math.min(oldTaxableIncome - 250000, 250000);
-    const taxChunk = chunk * 0.05;
-    oldTax += taxChunk;
-    oldBreakdown.push({ slab: "₹2,50,001 – ₹5,00,000", rate: "5%", tax: taxChunk });
-  }
-  oldBreakdown.push({ slab: "Up to ₹2,50,000", rate: "Nil", tax: 0 });
-
-  // Section 87A rebate for Old Regime (up to ₹5L taxable income)
+  let oldTax = oldSlabTax;
   let oldRebate87A = 0;
-  if (oldTaxableIncome <= 500000) {
+  if (oldTaxableIncome <= rules.oldRegime.rebateTaxableIncomeLimit) {
     oldRebate87A = oldTax;
     oldTax = 0;
   }
-  const oldCess = oldTax * 0.04;
+  const oldCess = (oldTax * rules.oldRegime.cessPercent) / 100;
   const totalOldTax = oldTax + oldCess;
   const oldMonthlyInHand = (grossAnnualSalary - totalOldTax) / 12;
 
   // -----------------------------------------------------------
-  // 2. Calculate New Regime Tax Slabs (Budget 2024-25 / FY 24-25 / 25-26)
-  const newStandardDeduction = 75000;
-  const newTaxableIncome = Math.max(0, grossAnnualSalary - newStandardDeduction);
+  // 2. New Regime
+  const newTaxableIncome = Math.max(0, grossAnnualSalary - rules.newRegime.standardDeduction);
+  const { tax: newSlabTax, breakdown: newBreakdown } = computeSlabTax(
+    newTaxableIncome,
+    rules.newRegime.slabs
+  );
 
-  let newTax = 0;
-  const newBreakdown: { slab: string; rate: string; tax: number }[] = [];
-
-  if (newTaxableIncome > 1500000) {
-    const chunk = (newTaxableIncome - 1500000) * 0.3;
-    newTax += chunk;
-    newBreakdown.push({ slab: "Above ₹15,00,000", rate: "30%", tax: chunk });
-  }
-  if (newTaxableIncome > 1200000) {
-    const chunk = Math.min(newTaxableIncome - 1200000, 300000);
-    const taxChunk = chunk * 0.2;
-    newTax += taxChunk;
-    newBreakdown.push({ slab: "₹12,00,001 – ₹15,00,000", rate: "20%", tax: taxChunk });
-  }
-  if (newTaxableIncome > 1000000) {
-    const chunk = Math.min(newTaxableIncome - 1000000, 200000);
-    const taxChunk = chunk * 0.15;
-    newTax += taxChunk;
-    newBreakdown.push({ slab: "₹10,00,001 – ₹12,00,000", rate: "15%", tax: taxChunk });
-  }
-  if (newTaxableIncome > 700000) {
-    const chunk = Math.min(newTaxableIncome - 700000, 300000);
-    const taxChunk = chunk * 0.1;
-    newTax += taxChunk;
-    newBreakdown.push({ slab: "₹7,00,001 – ₹10,00,000", rate: "10%", tax: taxChunk });
-  }
-  if (newTaxableIncome > 300000) {
-    const chunk = Math.min(newTaxableIncome - 300000, 400000);
-    const taxChunk = chunk * 0.05;
-    newTax += taxChunk;
-    newBreakdown.push({ slab: "₹3,00,001 – ₹7,00,000", rate: "5%", tax: taxChunk });
-  }
-  newBreakdown.push({ slab: "Up to ₹3,00,000", rate: "Nil", tax: 0 });
-
-  // 87A rebate for New Regime
+  let newTax = newSlabTax;
   let newRebate87A = 0;
-  if (newTaxableIncome <= 700000) {
+  if (newTaxableIncome <= rules.newRegime.rebateTaxableIncomeLimit) {
     newRebate87A = newTax;
     newTax = 0;
   }
-  const newCess = newTax * 0.04;
+  const newCess = (newTax * rules.newRegime.cessPercent) / 100;
   const totalNewTax = newTax + newCess;
   const newMonthlyInHand = (grossAnnualSalary - totalNewTax) / 12;
 
-  const breakevenDeductionNeeded = Math.round(
-    Math.max(250000, grossAnnualSalary > 1500000 ? 400000 : 350000)
+  const breakevenDeductionNeeded = computeBreakevenDeductions(
+    grossAnnualSalary,
+    totalNewTax,
+    rules.oldRegime
   );
 
   let optimalRegime: "Old" | "New" | "Equal" = "Equal";
@@ -504,6 +537,8 @@ export function calculateIncomeTax(params: TaxParams): IncomeTaxComparisonResult
   }
 
   return {
+    financialYear: rules.financialYear,
+    lastUpdated: rules.lastUpdated,
     oldRegime: {
       regime: "Old",
       grossSalary: grossAnnualSalary,
@@ -520,7 +555,7 @@ export function calculateIncomeTax(params: TaxParams): IncomeTaxComparisonResult
     newRegime: {
       regime: "New",
       grossSalary: grossAnnualSalary,
-      totalExemptionsAndDeductions: newStandardDeduction,
+      totalExemptionsAndDeductions: rules.newRegime.standardDeduction,
       taxableIncome: newTaxableIncome,
       taxBeforeCess: newTax + newRebate87A,
       rebate87A: newRebate87A,
@@ -724,7 +759,7 @@ export interface LoanPrepaymentResult {
   newTenureMonths: number;
   monthsSaved: number;
   yearsSaved: number;
-  effectiveGuaranteedYieldPercent: number;
+  effectivePrepaymentRatePercent: number;
   verdictHeadline: string;
   verdictSummary: string;
   yearlySchedule: LoanAmortizationYear[];
@@ -825,8 +860,10 @@ export function calculateLoanPrepayment(
   const yearsSaved = Number((monthsSaved / 12).toFixed(1));
   const totalInterestSaved = Math.max(0, originalTotalInterest - newTotalInterest);
 
-  // Prepayment yield is guaranteed tax-free equal to the home loan interest rate
-  const effectiveGuaranteedYieldPercent = annualInterestRatePercent;
+  // Prepaying avoids future interest at the loan's own rate — this is a
+  // reduction in a known liability, not an investment return, so it isn't
+  // described as a "yield" or "guaranteed"/"risk-free" here.
+  const effectivePrepaymentRatePercent = annualInterestRatePercent;
 
   const savedInLakhs = (totalInterestSaved / 100000).toFixed(2);
   const verdictHeadline = isTa ? `₹${savedInLakhs} இலட்சம் சேமிப்பு` : `₹${savedInLakhs} Lakh`;
@@ -835,12 +872,12 @@ export function calculateLoanPrepayment(
         totalInterestSaved
       ).toLocaleString(
         "en-IN"
-      )} வட்டி சேமிக்கப்படுகிறது — இது உறுதியான, ஆபத்தில்லாத, வரி இல்லாத ${annualInterestRatePercent}% வருமானத்திற்குச் சமம்.`
+      )} வட்டி சேமிக்கப்படுகிறது — இது தோராயமாக உங்கள் கடனின் ${annualInterestRatePercent}% வட்டி விகிதத்திற்குச் சமமான சேமிப்பாகும், வங்கி விதிமுறைகளுக்கு உட்பட்டது.`
     : `You cut ${monthsSaved} months (${yearsSaved} years) off your loan and save ₹${Math.round(
         totalInterestSaved
       ).toLocaleString(
         "en-IN"
-      )} in interest — effectively earning a guaranteed, risk-free ${annualInterestRatePercent}% tax-free yield.`;
+      )} in interest — a saving roughly equivalent to your loan's own ${annualInterestRatePercent}% rate, subject to your lender's terms and any tax treatment that applies to you.`;
 
   return {
     standardMonthlyEMI,
@@ -853,7 +890,7 @@ export function calculateLoanPrepayment(
     newTenureMonths,
     monthsSaved,
     yearsSaved,
-    effectiveGuaranteedYieldPercent,
+    effectivePrepaymentRatePercent,
     verdictHeadline,
     verdictSummary,
     yearlySchedule,

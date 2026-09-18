@@ -9,6 +9,11 @@ export const en = {
     chitFund: "CHIT FUND",
     switchLanguage: "தமிழ்",
     taglineBadge: "FREE · NO LOGIN · NOTHING FOR SALE",
+    breadcrumbHome: "Home",
+    breadcrumbCalculators: "Calculators",
+    disclaimerTitle: "Disclaimer",
+    relatedCalculatorsHeading: "Related calculators",
+    faqHeading: "Frequently asked questions",
   },
 
   // Footer
@@ -20,6 +25,11 @@ export const en = {
     chitFunds: "Chit Funds",
     copyright: "© 2026 returndesk — Open mathematical calculations.",
     disclaimer: "Independent financial analysis tool. Not SEBI registered investment advice.",
+    about: "About",
+    contact: "Contact",
+    privacy: "Privacy",
+    terms: "Terms",
+    disclaimerLink: "Disclaimer",
   },
 
   // Common UI words
@@ -36,10 +46,10 @@ export const en = {
     pa: "p.a.",
     live: "Live",
     soon: "Soon",
-    recommendedMove: "✓ Recommended Move",
-    cautionaryOutcome: "⚠ Cautionary Outcome",
+    recommendedMove: "✓ Favorable Outcome",
+    cautionaryOutcome: "⚠ Costlier Outcome",
     saveGain: "Save/Gain",
-    costTrap: "Cost Trap",
+    costTrap: "Costs More",
     mathematicalVerdict: "The Mathematical Verdict",
     plannedTools: "Planned Tools",
     freeForever: "Free Forever",
@@ -103,7 +113,7 @@ export const en = {
   showcase: {
     badge: "THE RETURNDESK VERDICT ENGINE",
     title: "Calculators that give you a verdict, not just a number.",
-    subtitle: "Brokers and banks give you complex tables that end with “Apply Now”. ReturnDesk runs the exact math, compares against standard alternatives, and tells you plainly whether it's a smart financial decision or a costly trap.",
+    subtitle: "Brokers and banks give you complex tables that end with “Apply Now”. ReturnDesk runs the exact math, compares against standard alternatives, and tells you plainly whether the numbers work in your favor or against it.",
     scenarios: {
       loans: {
         category: "Loans & Mortgages",
@@ -113,13 +123,13 @@ export const en = {
         value: "₹5.24 Lakh",
         valueLabel: "with ₹2L prepayment",
         benchmarkLabel: "standard 20y EMI",
-        comparison: "You shave 4.5 years off your loan and save ₹5.24L in interest — effectively earning a guaranteed, risk-free 8.75% return.",
+        comparison: "You shave 4.5 years off your loan and save ₹5.24L in interest — a saving roughly equal to your loan's own 8.75% rate, subject to your lender's terms.",
         breakdown: [
           { label: "Tenure Reduction", value: "-54 Months", subtext: "Debt-free 4.5 years earlier" },
           { label: "Net Interest Saved", value: "₹5,24,180", subtext: "Kept in your pocket, not bank's" },
-          { label: "Effective Yield", value: "8.75% Tax-Free", subtext: "Beats fixed deposits & debt funds" },
+          { label: "Effective Rate", value: "8.75%", subtext: "Compare with your other options" },
         ],
-        verdictTakeaway: "Prepayment in early years creates compounding interest relief that beats almost all conservative investment alternatives.",
+        verdictTakeaway: "Prepaying early avoids more compounding interest than prepaying later, since it acts on a larger remaining balance for longer.",
       },
       investments: {
         category: "Investments & SIP",
@@ -242,6 +252,28 @@ export const en = {
     colNetCashFlow: "Net Cash Flow",
     badgePrizeWon: "PRIZE WON",
     showingScheduleNotice: "Showing first 10 of {months} total months. Full cashflow series evaluated for exact XIRR convergence.",
+    faq: [
+      {
+        question: "What does the chit fund's \"APR\" or \"XIRR\" actually mean?",
+        answer:
+          "It's the effective annualised rate hidden inside the auction discount and dividend payments. As a borrower, bidding early means you receive less than the full chit value but still repay the full monthly installment — that gap is your real borrowing cost. As a saver, staying till the end means you receive dividends from other members' bids — that's your real return. We solve for this via IRR on the full month-by-month cash flow, not a rough average.",
+      },
+      {
+        question: "Is bidding early always the most expensive option?",
+        answer:
+          "Generally yes. The auction discount — and so the dividend pool it funds — tapers from its peak in month 1 down toward just the foreman's commission by the final month, which is why this calculator models that taper explicitly rather than using one flat discount for every month.",
+      },
+      {
+        question: "Is a chit fund regulated in India?",
+        answer:
+          "Registered chit funds are regulated under the Chit Funds Act, 1982, and the foreman must be registered with the relevant state Registrar of Chits. Before joining one, confirm the specific chit's registration — this calculator only computes the mathematics of a chit you describe, it doesn't verify anyone's registration.",
+      },
+      {
+        question: "How does the foreman's commission affect my numbers?",
+        answer:
+          "The foreman's commission is deducted from the auction discount pool before the remainder is distributed as dividends to non-winning members that month. A higher commission percentage means less dividend for everyone else, which raises the effective cost for borrowers and lowers the effective return for savers.",
+      },
+    ],
   },
 
   // Salary & Tax Calculator
@@ -271,14 +303,46 @@ export const en = {
     taxLabel: "Tax:",
     verdictEyebrow: "REGIME VERDICT · LIVE",
     verdictStatementOld: "With ₹{deductions} in total deductions, the Old Regime saves",
-    verdictStatementNew: "Under current deductions, the New Regime is superior and saves",
+    verdictStatementNew: "Under current deductions, the New Regime results in lower tax and saves",
     oldRegimeLabel: "Old Regime",
     newRegimeLabel: "New Regime",
     breakevenTitle: "The Breakeven Rule",
-    breakevenDesc: "For an income of ₹{income} Lakh, you need at least ₹{breakeven} in total deductions (Standard Deduction + HRA + 80C + 80D + 24b) for the Old Regime to beat the New Regime.",
+    breakevenDesc: "For an income of ₹{income} Lakh, you need at least ₹{breakeven} in total deductions (Standard Deduction + HRA + 80C + 80D + 24b) for the Old Regime to result in lower tax than the New Regime.",
     yourTotalDeductions: "Your Total Deductions Claimed:",
     newRegimeStdDed: "New Regime Flat Standard Deduction:",
     newRegimeStdDedValue: "₹75,000 (FY25)",
+    financialYearLabel: "Financial Year",
+    lastUpdatedLabel: "Rules last verified",
+    slabBreakdownTitle: "Tax slab breakdown",
+    slabBreakdownSubtitle: "How the total tax under each regime builds up, bracket by bracket.",
+    colSlab: "Slab",
+    colRate: "Rate",
+    colTax: "Tax in this slab",
+    assumptionsTitle: "Calculation assumptions",
+    assumptionsDesc: "Individual taxpayer under 60, no other income sources. Old Regime deductions are capped per section as shown above; New Regime applies the flat standard deduction only. Cess is 4% on tax after the Section 87A rebate.",
+    disclaimer: "This is an illustrative calculation based on the slabs and rebate rules for the selected financial year, not personalised tax advice. Confirm your final liability with a tax professional or the Income Tax Department before filing.",
+    faq: [
+      {
+        question: "Which regime should I pick?",
+        answer:
+          "Whichever results in lower tax for your actual deductions — that's exactly what the comparison above computes. As a rule of thumb, the Old Regime tends to win once your HRA, 80C, 80D, and home loan interest deductions together clear the breakeven amount shown; below that, the New Regime's lower slabs usually win.",
+      },
+      {
+        question: "Can I switch regimes every year?",
+        answer:
+          "If your only income is salary (no business or professional income), you can choose either regime each year when filing your return — the choice isn't locked in. Taxpayers with business income face more restrictions on switching back once they've opted out of the New Regime.",
+      },
+      {
+        question: "Does this include surcharge, or only cess?",
+        answer:
+          "This calculator applies the 4% health and education cess on tax after the Section 87A rebate, but does not compute surcharge, which only applies above ₹50 lakh (Old Regime) or higher new-regime thresholds and follows its own marginal relief rules. If your income is in that range, treat this result as a lower bound.",
+      },
+      {
+        question: "Why did the New Regime numbers change between FY 2024-25 and FY 2025-26?",
+        answer:
+          "Budget 2025 restructured the New Regime's slabs and raised the Section 87A rebate threshold from ₹7 lakh to ₹12 lakh of taxable income, effective FY 2025-26. The Old Regime's slabs were not changed. Use the financial year toggle above to see either year's rules explicitly.",
+      },
+    ],
   },
 
   // Investments & SIP Calculator
@@ -321,6 +385,28 @@ export const en = {
     colNominalCorpus: "Nominal Corpus",
     colRealPurchasingPower: "Real Purchasing Power",
     colUnrealizedGains: "Unrealized Gains",
+    faq: [
+      {
+        question: "What return rate should I actually assume?",
+        answer:
+          "There's no rate this calculator can guarantee — equity returns vary year to year and the CAGR you enter is an assumption you control, not a promise of what will happen. The presets (6% conservative, 12% Nifty-linked, 20% aggressive) are reference points to test different scenarios, not predictions.",
+      },
+      {
+        question: "Why is my \"real\" return so much lower than the CAGR I entered?",
+        answer:
+          "Two things eat into the nominal number: inflation reduces what a rupee buys by the time you withdraw, and 12.5% LTCG tax applies to gains above the ₹1.25 lakh exemption. This calculator subtracts both, which is why a 12% nominal CAGR can turn into a mid-single-digit real return.",
+      },
+      {
+        question: "What is step-up SIP?",
+        answer:
+          "It's increasing your monthly SIP contribution by a fixed percentage every year, typically in line with a salary hike, instead of investing a flat amount for the whole tenure. It grows your total invested amount faster in later years, which this calculator accounts for year by year.",
+      },
+      {
+        question: "How exactly is the LTCG tax applied here?",
+        answer:
+          "This calculator applies India's 12.5% long-term capital gains rate to your total gains above the ₹1.25 lakh exemption, computed once at the end of your tenure — a simplification of the real-world rule, where tax applies per redemption rather than in one lump sum at the end.",
+      },
+    ],
   },
 
   // Loans Calculator
@@ -350,8 +436,8 @@ export const en = {
     verdictStatement: "With your targeted prepayment plan, your net interest savings is",
     axisWithPrepayment: "with prepayment (-{years} yrs)",
     axisStandardLoan: "standard {years}y loan",
-    guaranteedYieldTitle: "Guaranteed Prepayment Yield",
-    guaranteedYieldDesc: "Every rupee you prepay saves you a compound {rate}% interest that would otherwise go straight to the bank. This makes prepayment a 100% risk-free, tax-free {rate}% yield that beats fixed income products.",
+    guaranteedYieldTitle: "Effective Prepayment Return",
+    guaranteedYieldDesc: "Every rupee you prepay saves you a compound {rate}% interest that would otherwise go straight to the bank. That makes prepayment roughly equivalent to a {rate}% return on that rupee — subject to your lender's terms and any tax treatment that applies to you — worth comparing against your other options.",
     originalInterest: "Original Total Interest:",
     newInterest: "New Total Interest:",
     newClosure: "New Loan Closure:",
@@ -364,5 +450,27 @@ export const en = {
     colInterestPaid: "Interest Paid",
     colPrepayment: "Prepayment",
     colClosingBalance: "Closing Balance",
+    faq: [
+      {
+        question: "How is my EMI actually calculated?",
+        answer:
+          "EMI = P × r × (1+r)ⁿ ÷ ((1+r)ⁿ − 1), where P is the loan principal, r is the monthly interest rate (annual rate ÷ 12 ÷ 100), and n is the number of monthly instalments. This gives a fixed monthly payment that fully repays the loan, with the interest portion highest in the early months and the principal portion growing over time.",
+      },
+      {
+        question: "Does prepaying reduce my EMI or shorten my tenure?",
+        answer:
+          "Most lenders let you choose. This calculator assumes you keep your EMI fixed and let the extra payment shorten your tenure, since that saves more total interest than reducing the EMI while keeping the same tenure. Check with your lender which option they apply by default.",
+      },
+      {
+        question: "Is prepaying always better than investing the same amount?",
+        answer:
+          "It depends on your loan's interest rate versus what you'd realistically earn after tax on the alternative. Prepaying a loan at 8.75% is a certain saving at that rate; an equity investment might average more over the long run but isn't guaranteed and carries risk the loan saving doesn't. Compare using the SIP calculator with your own assumptions before deciding.",
+      },
+      {
+        question: "Can my lender charge a penalty for prepaying?",
+        answer:
+          "For floating-rate loans to individual borrowers, RBI rules generally prohibit prepayment penalties. Fixed-rate loans and loans to non-individuals may still carry a penalty — check your loan agreement's foreclosure clause before prepaying a large amount.",
+      },
+    ],
   },
 };

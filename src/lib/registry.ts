@@ -22,6 +22,8 @@ export interface CalculatorPage {
   subtitle: string;
   /** Used for <title> and meta description on the page itself. */
   metaDescription: string;
+  /** Social share / OG image, relative to the site root. */
+  ogImage: string;
 }
 
 export const clusters: Cluster[] = [
@@ -68,6 +70,7 @@ export const calculators: CalculatorPage[] = [
     subtitle: "Find the real interest rate hiding in your chit fund auction.",
     metaDescription:
       "Work out the real interest rate in your chit fund — as a borrower or as a subscriber — compared against a personal loan or a fixed deposit.",
+    ogImage: "/images/chit-fund-committee.webp",
   },
   {
     slug: "salary-tax",
@@ -76,6 +79,7 @@ export const calculators: CalculatorPage[] = [
     subtitle: "Compare exact monthly in-hand pay, deductions, and find your breakeven point.",
     metaDescription:
       "Calculate your income tax under Old vs New Tax Regime for FY 2024-25 and 2025-26 with HRA, 80C, 80D and standard deduction.",
+    ogImage: "/images/salary-tax-hero.jpg",
   },
   {
     slug: "investments",
@@ -84,14 +88,16 @@ export const calculators: CalculatorPage[] = [
     subtitle: "See your true post-tax, inflation-adjusted purchasing power with step-up compounding.",
     metaDescription:
       "Calculate nominal vs real inflation-adjusted SIP corpus with annual step-up and 12.5% LTCG tax impact.",
+    ogImage: "/images/sip-wealth-hero.jpg",
   },
   {
     slug: "loans",
     cluster: "loans",
     title: "Loan EMI & Prepayment Calculator",
-    subtitle: "Calculate exact interest saved, months shaved, and guaranteed tax-free prepayment yield.",
+    subtitle: "Calculate exact interest saved, months shaved, and the effective return on prepaying.",
     metaDescription:
-      "Calculate home loan EMI, prepayment interest savings, tenure reduction, and risk-free return on prepaying principal.",
+      "Calculate home loan EMI, prepayment interest savings, tenure reduction, and the effective return on prepaying principal.",
+    ogImage: "/images/loan-prepayment-hero.jpg",
   },
 ];
 

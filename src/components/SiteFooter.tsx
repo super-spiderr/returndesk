@@ -30,6 +30,23 @@ export default function SiteFooter() {
           </Link>
         </div>
       </div>
+      <div className="flex flex-wrap gap-4 text-xs font-bold text-muted mb-4">
+        <Link href="/about" className="hover:text-ink hover:underline">
+          {t.footer.about}
+        </Link>
+        <Link href="/contact" className="hover:text-ink hover:underline">
+          {t.footer.contact}
+        </Link>
+        <Link href="/privacy" className="hover:text-ink hover:underline">
+          {t.footer.privacy}
+        </Link>
+        <Link href="/terms" className="hover:text-ink hover:underline">
+          {t.footer.terms}
+        </Link>
+        <Link href="/disclaimer" className="hover:text-ink hover:underline">
+          {t.footer.disclaimerLink}
+        </Link>
+      </div>
       <div className="flex flex-wrap justify-between gap-3 text-xs text-muted/80 border-t border-rule/60 pt-4">
         <span>{t.footer.copyright}</span>
         <span>{t.footer.disclaimer}</span>

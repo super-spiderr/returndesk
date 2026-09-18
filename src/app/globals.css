@@ -105,3 +105,44 @@ html[lang="ta"] td,
   letter-spacing: 0.02em;
 }
 
+/* Prose styling for trust pages (about/privacy/terms/disclaimer/contact) —
+   these are plain long-form content, not a design-system component, so they
+   get their own minimal typographic rules rather than per-tag utility
+   classes repeated across five pages. */
+.legal-content h2 {
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 1.125rem;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.legal-content h2:first-child {
+  margin-top: 0;
+}
+
+.legal-content p,
+.legal-content li {
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.legal-content p + p {
+  margin-top: 0.75rem;
+}
+
+.legal-content ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+  margin-top: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.legal-content a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
