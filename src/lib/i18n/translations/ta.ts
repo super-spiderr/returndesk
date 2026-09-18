@@ -16,6 +16,9 @@ export const ta: typeof en = {
     disclaimerTitle: "பொறுப்புத் துறப்பு",
     relatedCalculatorsHeading: "தொடர்புடைய கால்குலேட்டர்கள்",
     faqHeading: "அடிக்கடி கேட்கப்படும் கேள்விகள்",
+    previousPage: "முந்தையது",
+    nextPage: "அடுத்தது",
+    pageOf: "பக்கம் {page} / {total}",
   },
 
   // Footer
@@ -253,7 +256,6 @@ export const ta: typeof en = {
     colNetOutflow: "செலுத்திய நிகரத் தொகை",
     colNetCashFlow: "நிகர பணப்பரிமாற்றம்",
     badgePrizeWon: "ஏலம் எடுக்கப்பட்டது",
-    showingScheduleNotice: "மொத்தம் {months} மாதங்களில் முதல் 10 மாதங்கள் காட்டப்பட்டுள்ளன. துல்லியமான XIRR-க்கு அனைத்து மாதங்களும் கணக்கிடப்பட்டுள்ளன.",
     faq: [
       {
         question: "சீட்டு நிதியின் \"APR\" அல்லது \"XIRR\" என்றால் என்ன?",

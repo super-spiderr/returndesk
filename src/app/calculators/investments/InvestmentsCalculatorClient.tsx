@@ -8,7 +8,9 @@ import BlackSlab from "@/components/BlackSlab";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import RelatedCalculators from "@/components/RelatedCalculators";
 import FAQ from "@/components/FAQ";
+import TablePagination from "@/components/TablePagination";
 import { calculateSIPRealReturn } from "@/lib/finance";
+import { usePagination } from "@/lib/usePagination";
 import { useLanguage, interpolate } from "@/lib/i18n";
 
 export default function InvestmentsCalculatorClient() {
@@ -33,6 +35,8 @@ export default function InvestmentsCalculatorClient() {
       lang,
     });
   }, [monthlySIP, tenureYears, cagr, inflation, stepUp, ltcgTax, lang]);
+
+  const schedulePagination = usePagination(result.yearlySchedule, 10);
 
   const valueAxisPercent = Math.min(
     Math.max((result.realEffectiveCAGRPercent / 15) * 100, 10),
@@ -319,7 +323,7 @@ export default function InvestmentsCalculatorClient() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-rule/70">
-                {result.yearlySchedule.map((row) => (
+                {schedulePagination.pageItems.map((row) => (
                   <tr key={row.year} className="hover:bg-wash/50">
                     <td className="py-3 px-3 tabular-nums font-bold">{t.common.year} {row.year}</td>
                     <td className="py-3 px-3 tabular-nums">₹{Math.round(row.monthlyAmount).toLocaleString("en-IN")}</td>
@@ -336,6 +340,13 @@ export default function InvestmentsCalculatorClient() {
               </tbody>
             </table>
           </div>
+
+          <TablePagination
+            page={schedulePagination.page}
+            pageCount={schedulePagination.pageCount}
+            onPageChange={schedulePagination.setPage}
+            labels={{ previous: t.nav.previousPage, next: t.nav.nextPage, pageOf: t.nav.pageOf }}
+          />
         </div>
 
         <FAQ items={inv.faq} heading={t.nav.faqHeading} />

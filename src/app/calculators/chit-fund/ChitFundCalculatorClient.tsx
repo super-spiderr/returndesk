@@ -8,7 +8,9 @@ import BlackSlab from "@/components/BlackSlab";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import RelatedCalculators from "@/components/RelatedCalculators";
 import FAQ from "@/components/FAQ";
+import TablePagination from "@/components/TablePagination";
 import { calculateChitFund } from "@/lib/finance";
+import { usePagination } from "@/lib/usePagination";
 import { useLanguage, interpolate } from "@/lib/i18n";
 
 export default function ChitFundCalculatorClient() {
@@ -44,6 +46,8 @@ export default function ChitFundCalculatorClient() {
     bidDiscountPercent,
     lang,
   ]);
+
+  const schedulePagination = usePagination(result.schedule, 10);
 
   const valueAxisPercent = isBorrower
     ? Math.min(Math.max((result.effectiveXirrPercent / 30) * 100, 5), 95)
@@ -373,7 +377,7 @@ export default function ChitFundCalculatorClient() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-rule/70">
-                {result.schedule.slice(0, 10).map((row) => (
+                {schedulePagination.pageItems.map((row) => (
                   <tr
                     key={row.month}
                     className={
@@ -401,11 +405,13 @@ export default function ChitFundCalculatorClient() {
               </tbody>
             </table>
           </div>
-          {months > 10 && (
-            <p className="mt-4 text-xs text-muted text-center italic">
-              {interpolate(c.showingScheduleNotice, { months })}
-            </p>
-          )}
+
+          <TablePagination
+            page={schedulePagination.page}
+            pageCount={schedulePagination.pageCount}
+            onPageChange={schedulePagination.setPage}
+            labels={{ previous: t.nav.previousPage, next: t.nav.nextPage, pageOf: t.nav.pageOf }}
+          />
         </div>
 
         <FAQ items={c.faq} heading={t.nav.faqHeading} />

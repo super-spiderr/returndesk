@@ -14,6 +14,9 @@ export const en = {
     disclaimerTitle: "Disclaimer",
     relatedCalculatorsHeading: "Related calculators",
     faqHeading: "Frequently asked questions",
+    previousPage: "Previous",
+    nextPage: "Next",
+    pageOf: "Page {page} of {total}",
   },
 
   // Footer
@@ -251,7 +254,6 @@ export const en = {
     colNetOutflow: "Net Outflow",
     colNetCashFlow: "Net Cash Flow",
     badgePrizeWon: "PRIZE WON",
-    showingScheduleNotice: "Showing first 10 of {months} total months. Full cashflow series evaluated for exact XIRR convergence.",
     faq: [
       {
         question: "What does the chit fund's \"APR\" or \"XIRR\" actually mean?",
