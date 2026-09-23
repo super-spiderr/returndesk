@@ -12,12 +12,12 @@ export default function SiteNav() {
   const { lang, toggleLang, t } = useLanguage();
 
   return (
-    <nav className="flex items-center justify-between border-b border-rule py-4.5">
+    <nav className="flex flex-wrap items-center justify-between gap-y-3 border-b border-rule py-4.5">
       <Link
         href="/"
-        className="flex items-center gap-2 text-xl font-extrabold tracking-tight text-ink no-underline hover:opacity-85 transition-opacity"
+        className="flex shrink-0 items-center gap-2 text-xl font-extrabold tracking-tight text-ink no-underline hover:opacity-85 transition-opacity"
       >
-        <Image src="/images/logo-icon.png" alt="" width={128} height={128} priority className="h-8 w-8" />
+        <Image src="/images/logo-icon.png" alt="" width={128} height={128} priority className="h-8 w-8 shrink-0" />
         {t.nav.brand}
       </Link>
       <div className="flex flex-wrap items-center gap-3 sm:gap-6 text-xs sm:text-[13px] font-bold text-muted">
