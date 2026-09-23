@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import SiteNav from "@/components/SiteNav";
 import SiteFooter from "@/components/SiteFooter";
 import BlackSlab from "@/components/BlackSlab";
@@ -102,6 +103,12 @@ export default function SalaryTaxCalculatorClient() {
             </h1>
             <p className="m-0 text-base sm:text-lg leading-relaxed text-muted">
               {s.subtitle}
+            </p>
+            <p className="mt-3 text-sm text-muted">
+              Want a ready-made page for your exact CTC?{" "}
+              <Link href="/salary-calculator" className="font-bold text-ink hover:underline">
+                Browse salary calculators by amount →
+              </Link>
             </p>
           </div>
           <div className="relative flex justify-center sm:justify-end">
