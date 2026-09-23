@@ -5,12 +5,13 @@ import SiteFooter from "@/components/SiteFooter";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import FAQ from "@/components/FAQ";
 import { pageMetadata } from "@/lib/seo";
-import { LATEST_TAX_YEAR } from "@/lib/tax";
+import { LATEST_TAX_YEAR, taxYearDisplayLabel } from "@/lib/tax";
 import { CTC_LAKHS, ctcLabel, ctcToSlug } from "@/lib/salaryPages";
 
 export const dynamic = "force-static";
 
-const TITLE = `Salary Calculator: In-Hand Pay by CTC (FY ${LATEST_TAX_YEAR})`;
+const YEAR_LABEL = taxYearDisplayLabel(LATEST_TAX_YEAR);
+const TITLE = `Salary Calculator: In-Hand Pay by CTC — ${YEAR_LABEL}`;
 const DESCRIPTION =
   "Find your exact in-hand monthly salary, tax, and Old vs New regime verdict for your CTC — pick your amount below for the full breakdown.";
 
@@ -35,7 +36,7 @@ const faqItems = [
   },
   {
     question: "How current are these numbers?",
-    answer: `Every page uses the tax slabs from Budget ${LATEST_TAX_YEAR === "2025-26" ? "2025" : "the latest Finance Act"}, effective FY ${LATEST_TAX_YEAR}. The financial year and last-updated date are shown on every page — check that before relying on the figures for a tax year that's since changed.`,
+    answer: `Every page uses the tax slabs in effect for ${YEAR_LABEL}. The tax year and last-updated date are shown on every page — check that before relying on the figures for a year that's since changed.`,
   },
 ];
 
@@ -52,7 +53,7 @@ export default function SalaryCalculatorHub() {
         <header className="pt-8 pb-10 max-w-3xl">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-rule bg-paper px-3 py-1 text-xs font-bold text-muted">
             <span className="h-1.5 w-1.5 rounded-full bg-ink" />
-            FY {LATEST_TAX_YEAR} · UPDATED SLABS
+            {YEAR_LABEL} · UPDATED SLABS
           </div>
           <h1
             className="m-0 mb-4 font-black text-ink tracking-tight"

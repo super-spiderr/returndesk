@@ -282,7 +282,7 @@ export const en = {
   salaryTaxCalc: {
     badge: "SALARY & TAX · CALCULATOR 02",
     title: "Old vs New Tax Regime & In-Hand Salary",
-    subtitle: "Updated for Budget FY 2024-25 / FY 2025-26. Find the exact mathematical breakeven point where your HRA, 80C, 80D, and Home Loan interest deductions beat the lower New Regime slabs.",
+    subtitle: "Updated for Tax Year 2026-27 (FY 2026-27), plus FY 2025-26 and 2024-25. Find the exact mathematical breakeven point where your HRA, 80C, 80D, and Home Loan interest deductions beat the lower New Regime slabs.",
     incomeSection: "1. Salary & Income",
     grossSalaryLabel: "Annual Gross Salary / CTC",
     hraSection: "2. HRA & Rent Exemption (Old Regime)",
@@ -312,7 +312,7 @@ export const en = {
     breakevenDesc: "For an income of ₹{income} Lakh, you need at least ₹{breakeven} in total deductions (Standard Deduction + HRA + 80C + 80D + 24b) for the Old Regime to result in lower tax than the New Regime.",
     yourTotalDeductions: "Your Total Deductions Claimed:",
     newRegimeStdDed: "New Regime Flat Standard Deduction:",
-    newRegimeStdDedValue: "₹75,000 (FY25)",
+    newRegimeStdDedValue: "₹75,000",
     financialYearLabel: "Financial Year",
     lastUpdatedLabel: "Rules last verified",
     slabBreakdownTitle: "Tax slab breakdown",
@@ -343,6 +343,11 @@ export const en = {
         question: "Why did the New Regime numbers change between FY 2024-25 and FY 2025-26?",
         answer:
           "Budget 2025 restructured the New Regime's slabs and raised the Section 87A rebate threshold from ₹7 lakh to ₹12 lakh of taxable income, effective FY 2025-26. The Old Regime's slabs were not changed. Use the financial year toggle above to see either year's rules explicitly.",
+      },
+      {
+        question: "What is \"Tax Year 2026-27\", and is it different from FY 2026-27?",
+        answer:
+          "Same thing, new name. The Income Tax Act, 2025 replaced the 1961 Act starting in 2026-27, and \"Tax Year\" is the term it uses in place of the old Financial Year / Assessment Year pair — so \"Tax Year 2026-27\" and \"FY 2026-27\" mean the same 12 months. Budget 2026 kept both regimes' slabs unchanged from FY 2025-26, so the numbers on this page carry over.",
       },
     ],
   },

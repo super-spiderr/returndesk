@@ -8,7 +8,7 @@ import BlackSlab from "@/components/BlackSlab";
 import FAQ from "@/components/FAQ";
 import { pageMetadata } from "@/lib/seo";
 import { calculateIncomeTax } from "@/lib/finance";
-import { LATEST_TAX_YEAR } from "@/lib/tax";
+import { LATEST_TAX_YEAR, taxYearDisplayLabel } from "@/lib/tax";
 import {
   CTC_LAKHS,
   REGIME_SLUGS,
@@ -54,12 +54,13 @@ export async function generateMetadata({
   const { ctc, regime } = await params;
   const data = getPageData(ctc, regime);
   if (!data) return {};
+  const yearLabel = taxYearDisplayLabel(LATEST_TAX_YEAR);
   const title = `₹${data.lakhs} LPA In-Hand Salary Under ${regimeLabel(
     data.regime
-  )} (FY ${LATEST_TAX_YEAR})`;
+  )} — ${yearLabel}`;
   const description = `Full slab-by-slab breakdown of tax and in-hand pay for a ₹${data.lakhs} LPA CTC under the ${regimeLabel(
     data.regime
-  )}, FY ${LATEST_TAX_YEAR}.`;
+  )}, ${yearLabel}.`;
   return pageMetadata(`/salary-calculator/${ctc}/${regime}`, title, description);
 }
 
@@ -131,7 +132,7 @@ export default async function CtcRegimePage({
         <header className="pt-8 pb-8 max-w-3xl">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-rule bg-paper px-3 py-1 text-xs font-bold text-muted">
             <span className="h-1.5 w-1.5 rounded-full bg-ink" />
-            FY {LATEST_TAX_YEAR} · {label.toUpperCase()}
+            {taxYearDisplayLabel(LATEST_TAX_YEAR)} · {label.toUpperCase()}
           </div>
           <h1
             className="m-0 mb-4 font-black text-ink tracking-tight"
@@ -140,8 +141,8 @@ export default async function CtcRegimePage({
             ₹{lakhs} LPA In-Hand Salary Under {label}
           </h1>
           <p className="m-0 text-base sm:text-lg leading-relaxed text-muted">
-            Slab-by-slab tax breakdown for a {ctcLabel(lakhs)} CTC under the {label}, FY{" "}
-            {LATEST_TAX_YEAR}.
+            Slab-by-slab tax breakdown for a {ctcLabel(lakhs)} CTC under the {label},{" "}
+            {taxYearDisplayLabel(LATEST_TAX_YEAR)}.
           </p>
         </header>
 
@@ -295,7 +296,7 @@ export default async function CtcRegimePage({
         )}
 
         <div className="mb-10 flex flex-wrap gap-x-6 gap-y-1 text-xs font-bold text-ink border-t border-b border-rule py-4">
-          <span>Financial year: FY {result.financialYear}</span>
+          <span>{taxYearDisplayLabel(result.financialYear)}</span>
           <span>
             Slabs last updated:{" "}
             {new Date(result.lastUpdated).toLocaleDateString("en-IN", {

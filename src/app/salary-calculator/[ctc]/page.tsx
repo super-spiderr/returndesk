@@ -8,7 +8,7 @@ import BlackSlab from "@/components/BlackSlab";
 import FAQ from "@/components/FAQ";
 import { pageMetadata } from "@/lib/seo";
 import { calculateIncomeTax } from "@/lib/finance";
-import { LATEST_TAX_YEAR } from "@/lib/tax";
+import { LATEST_TAX_YEAR, taxYearDisplayLabel } from "@/lib/tax";
 import {
   CTC_LAKHS,
   ctcLabel,
@@ -44,8 +44,9 @@ export async function generateMetadata({
   const { ctc } = await params;
   const data = getPageData(ctc);
   if (!data) return {};
-  const title = `₹${data.lakhs} LPA In-Hand Salary Calculator (Old vs New Regime, FY ${LATEST_TAX_YEAR})`;
-  const description = `₹${data.lakhs} LPA CTC: exact monthly in-hand pay, tax, and the Old vs New regime verdict, with a full slab-by-slab breakdown for FY ${LATEST_TAX_YEAR}.`;
+  const yearLabel = taxYearDisplayLabel(LATEST_TAX_YEAR);
+  const title = `₹${data.lakhs} LPA In-Hand Salary Calculator, Old vs New Regime — ${yearLabel}`;
+  const description = `₹${data.lakhs} LPA CTC: exact monthly in-hand pay, tax, and the Old vs New regime verdict, with a full slab-by-slab breakdown for ${yearLabel}.`;
   return pageMetadata(`/salary-calculator/${ctc}`, title, description);
 }
 
@@ -102,7 +103,9 @@ export default async function CtcOverviewPage({
         result.oldRegime.totalTax
       ).toLocaleString("en-IN")} under the Old Regime and ₹${Math.round(
         result.newRegime.totalTax
-      ).toLocaleString("en-IN")} under the New Regime, for FY ${LATEST_TAX_YEAR}. See the slab-by-slab breakdown on each regime's own page.`,
+      ).toLocaleString("en-IN")} under the New Regime, for ${taxYearDisplayLabel(
+        LATEST_TAX_YEAR
+      )}. See the slab-by-slab breakdown on each regime's own page.`,
     },
   ];
 
@@ -122,7 +125,7 @@ export default async function CtcOverviewPage({
         <header className="pt-8 pb-8 max-w-3xl">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-rule bg-paper px-3 py-1 text-xs font-bold text-muted">
             <span className="h-1.5 w-1.5 rounded-full bg-ink" />
-            FY {LATEST_TAX_YEAR} · CTC {ctcLabel(lakhs)}
+            {taxYearDisplayLabel(LATEST_TAX_YEAR)} · CTC {ctcLabel(lakhs)}
           </div>
           <h1
             className="m-0 mb-4 font-black text-ink tracking-tight"
@@ -234,7 +237,7 @@ export default async function CtcOverviewPage({
             to plug in your own figures.
           </p>
           <div className="flex flex-wrap gap-x-6 gap-y-1 text-xs font-bold text-ink pt-2 border-t border-rule">
-            <span>Financial year: FY {result.financialYear}</span>
+            <span>{taxYearDisplayLabel(result.financialYear)}</span>
             <span>
               Slabs last updated:{" "}
               {new Date(result.lastUpdated).toLocaleDateString("en-IN", {
