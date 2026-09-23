@@ -1,16 +1,23 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "@/lib/i18n";
 
 // Site is light-only: chrome stays fully monochrome, since lime/red are
 // reserved for verdicts and never appear on a button, badge, link, or header.
+// The logo mark itself is the one exception — it's a brand asset, not a UI
+// colour choice, so it keeps its own green.
 export default function SiteNav() {
   const { lang, toggleLang, t } = useLanguage();
 
   return (
     <nav className="flex items-center justify-between border-b border-rule py-4.5">
-      <Link href="/" className="text-xl font-extrabold tracking-tight text-ink no-underline hover:opacity-85 transition-opacity">
+      <Link
+        href="/"
+        className="flex items-center gap-2 text-xl font-extrabold tracking-tight text-ink no-underline hover:opacity-85 transition-opacity"
+      >
+        <Image src="/images/logo-icon.png" alt="" width={128} height={128} priority className="h-8 w-8" />
         {t.nav.brand}
       </Link>
       <div className="flex flex-wrap items-center gap-3 sm:gap-6 text-xs sm:text-[13px] font-bold text-muted">
