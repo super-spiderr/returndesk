@@ -87,6 +87,15 @@ body {
     height: 0;
   }
 }
+/* Resting closed state — content is force-mounted (always in the HTML for
+   crawlers/no-JS) and collapsed by height alone, matching what the old
+   native <details> gave us for free. The animation classes below only cover
+   the moment of toggling; without this, a closed item that never gets
+   toggled would render at full height until first interaction. */
+.accordion-content[data-state="closed"] {
+  height: 0;
+}
+
 .animate-accordion-down {
   animation: accordion-down 0.25s ease-out;
 }

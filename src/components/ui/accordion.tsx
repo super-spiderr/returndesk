@@ -51,8 +51,15 @@ function AccordionContent({
   ...props
 }: React.ComponentProps<typeof AccordionPrimitive.Content>) {
   return (
+    // forceMount: without it, Radix doesn't put a closed item's children in
+    // the DOM at all — meaning a crawler that reads the rendered HTML (not
+    // just the FAQPage JSON-LD) never sees the answer text, only the
+    // question. forceMount keeps every answer in the HTML always; the
+    // collapsed look is pure CSS (accordion-up/down + a static closed-state
+    // height, both in globals.css), same as the old native <details> did.
     <AccordionPrimitive.Content
-      className="overflow-hidden text-sm text-muted data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
+      forceMount
+      className="accordion-content overflow-hidden text-sm text-muted data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
       {...props}
     >
       <p className={cn("px-4 pb-4 leading-relaxed", className)}>{children}</p>
