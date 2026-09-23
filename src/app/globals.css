@@ -68,6 +68,70 @@ body {
   }
 }
 
+/* Radix Accordion (FAQ) height animation, driven off the height Radix
+   measures into --radix-accordion-content-height — no extra Tailwind
+   animation plugin needed. */
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+/* Resting closed state — content is force-mounted (always in the HTML for
+   crawlers/no-JS) and collapsed by height alone, matching what the old
+   native <details> gave us for free. The animation classes below only cover
+   the moment of toggling; without this, a closed item that never gets
+   toggled would render at full height until first interaction. */
+.accordion-content[data-state="closed"] {
+  height: 0;
+}
+
+.animate-accordion-down {
+  animation: accordion-down 0.25s ease-out;
+}
+.animate-accordion-up {
+  animation: accordion-up 0.2s ease-in;
+}
+
+/* Slow ambient float for background glow blobs — atmosphere, not signal, so
+   it stays well under the colour rule: verdicts are still the only saturated
+   colour a visitor reads as meaningful. */
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(2%, -3%) scale(1.05);
+  }
+}
+.animate-float-slow {
+  animation: float-slow 14s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float-slow,
+  .animate-accordion-down,
+  .animate-accordion-up {
+    animation: none;
+  }
+}
+
+::selection {
+  background: var(--ink);
+  color: var(--wash);
+}
+
 /* Tamil Typography: letter-spacing and breathing room for Tamil glyphs */
 html[lang="ta"],
 [data-lang="ta"] {

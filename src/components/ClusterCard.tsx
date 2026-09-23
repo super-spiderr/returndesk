@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { motion } from "framer-motion";
 import type { Cluster } from "@/lib/registry";
 import { useLanguage } from "@/lib/i18n";
 
@@ -52,12 +53,18 @@ export default function ClusterCard({ cluster, href }: { cluster: Cluster; href?
 
   if (isLive && href) {
     return (
-      <Link
-        href={href}
-        className="group rounded-2xl border-2 border-ink bg-paper p-6 no-underline transition-all hover:bg-wash hover:shadow-md hover:border-ink cursor-pointer"
+      <motion.div
+        whileHover={{ y: -5 }}
+        whileTap={{ scale: 0.98 }}
+        transition={{ type: "spring", stiffness: 350, damping: 22 }}
       >
-        {body}
-      </Link>
+        <Link
+          href={href}
+          className="group block rounded-2xl border-2 border-ink bg-paper p-6 no-underline transition-[box-shadow,background-color] duration-300 hover:bg-wash hover:shadow-[0_16px_36px_rgba(22,28,36,0.14)] cursor-pointer"
+        >
+          {body}
+        </Link>
+      </motion.div>
     );
   }
 
