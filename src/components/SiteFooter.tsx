@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "@/lib/i18n";
 
@@ -9,11 +10,14 @@ export default function SiteFooter() {
   return (
     <footer className="mt-20 border-t border-rule pt-8 pb-12 text-[13px] text-muted">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-        <div>
-          <span className="font-extrabold text-ink text-base">{t.nav.brand}</span>
-          <p className="m-0 text-xs text-muted mt-1">
-            {t.footer.description}
-          </p>
+        <div className="flex items-start gap-2.5">
+          <Image src="/images/logo-icon.png" alt="" width={128} height={128} className="h-7 w-7 mt-0.5" />
+          <div>
+            <span className="font-extrabold text-ink text-base">{t.nav.brand}</span>
+            <p className="m-0 text-xs text-muted mt-1">
+              {t.footer.description}
+            </p>
+          </div>
         </div>
         <div className="flex flex-wrap gap-4 text-xs font-bold text-ink">
           <Link href="/calculators/loans" className="hover:underline">

@@ -1,12 +1,15 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "@/lib/i18n";
 
 // Site is light-only: chrome stays fully monochrome, since lime/red are
 // reserved for verdicts and never appear on a button, badge, link, or header.
-// Links get a grow-in underline on hover for a bit of life without touching
-// colour — pure CSS, no JS, so it costs nothing on 90+ static pages.
+// The logo mark itself is the one exception — it's a brand asset, not a UI
+// colour choice, so it keeps its own green. Links get a grow-in underline on
+// hover for a bit of life without touching colour — pure CSS, no JS, so it
+// costs nothing on 90+ static pages.
 const linkUnderline =
   "relative no-underline after:absolute after:left-0 after:-bottom-0.5 after:h-[1.5px] after:w-0 after:bg-ink after:transition-all after:duration-300 hover:after:w-full";
 
@@ -17,8 +20,9 @@ export default function SiteNav() {
     <nav className="flex flex-wrap items-center justify-between gap-y-3 border-b border-rule py-4.5">
       <Link
         href="/"
-        className="shrink-0 text-xl font-extrabold tracking-tight text-ink no-underline transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]"
+        className="flex shrink-0 items-center gap-2 text-xl font-extrabold tracking-tight text-ink no-underline transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]"
       >
+        <Image src="/images/logo-icon.png" alt="" width={128} height={128} priority className="h-8 w-8 shrink-0" />
         {t.nav.brand}
       </Link>
       <div className="flex flex-wrap items-center gap-3 sm:gap-6 text-xs sm:text-[13px] font-bold text-muted">
