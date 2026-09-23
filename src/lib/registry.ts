@@ -78,7 +78,7 @@ export const calculators: CalculatorPage[] = [
     title: "Old vs New Tax Regime Calculator",
     subtitle: "Compare exact monthly in-hand pay, deductions, and find your breakeven point.",
     metaDescription:
-      "Calculate your income tax under Old vs New Tax Regime for FY 2024-25 and 2025-26 with HRA, 80C, 80D and standard deduction.",
+      "Calculate your income tax under Old vs New Tax Regime for Tax Year 2026-27 (FY 2026-27), plus FY 2025-26 and 2024-25, with HRA, 80C, 80D and standard deduction.",
     ogImage: "/images/salary-tax-hero.jpg",
   },
   {
